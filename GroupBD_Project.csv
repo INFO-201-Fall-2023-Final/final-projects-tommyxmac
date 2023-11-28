@@ -1,8 +1,0 @@
-"","X","Racial.Groups","AP.Enrollment","IB.Enrollment","Dual.Enrollment","Talented.and.Gifted.Enrollment","High_School_Grad_or_Higher_Percentage","Bachelor_Degree_Percentage","median_income_us_2022_race_ethnicity_usd","X2020_unemployement_percentage","X2021_unemployement_percentage","X2020_uninsured_rates","X2021_uninsured_rates","avoided_care_cost_percentage","X2020_Covid_cases","X2020_Covid_deaths","X2020_Covid_Hosp","X2020_Covid_Tests","X2021_Covid_cases","X2021_Covid_deaths","X2021_Covid_Hosp","X2021_Covid_Tests"
-"1",1,"American Indian or Alaska Native",12158,612,11437,19408,"78.10%","16.80%","52,810",11.7,8.2,NA,NA,6.2,1530,47,309,3630,5214,109,670,177877
-"2",2,"Asian",345173,22376,91894,307138,"88.20%","57.40%","108,700",8.7,5,8.8,6.3,2.8,2475,142,372,37091,10053,291,815,326107
-"3",3,"Black or African American",273207,23235,147577,240229,"88.30%","25.40%","52,860",11.4,8.6,14.6,14.1,6.1,13945,734,1878,100562,42039,1289,3660,330654
-"4",4,"Hispanic or Latino of any race",717464,44513,338358,571709,"73.10%","20.40%","62,800",10.4,5,29.3,30.1,4.3,24219,691,2617,99182,85653,1583,4992,848455
-"5",5,"Native Hawaiian or Other Pacific Islander",6894,489,3571,5635,"87.60%","19.80%","69,973",8.9,6.9,NA,NA,4,NA,NA,NA,NA,NA,NA,NA,NA
-"6",6,"Two or more races",103718,7382,51744,140451,"81.30%","27.90%","",11.6,8.2,NA,NA,5.5,1928,31,122,41,7993,103,348,21814
-"7",7,"White",1423670,68933,981077,1671040,"93.70%","39.00%","81,060",7.3,4.7,9.2,8.7,3.2,40918,1806,4466,547937,183099,4856,10386,1908420
