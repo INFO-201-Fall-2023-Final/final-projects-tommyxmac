@@ -1,0 +1,38 @@
+library(shiny)
+library(plotly)
+
+df <- data.frame(
+  Racial.Groups = c("American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander", "Two or more races", "White"),
+  AP.Enrollment = c(12158, 345173, 273207, 717464, 6894, 103718, 1423670),
+  IB.Enrollment = c(612, 22376, 23235, 44513, 489, 7382, 68933),
+  Dual.Enrollment = c(11437, 91894, 147577, 338358, 3571, 51744, 981077),
+  Talented.and.Gifted.Enrollment = c(19408, 307138, 240229, 571709, 5635, 140451, 1671040)
+)
+
+
+ui <- fluidPage(
+  titlePanel("Enrollment Data by Racial Group"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("category", "Select Category:",
+                  min = 1, max = ncol(df) - 1, value = 1, step = 1,)
+),
+    mainPanel(
+      plotlyOutput("donutChart")
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$donutChart <- renderPlotly({
+    selected_category <- df[, input$category + 1]
+    labels <- df$Racial.Groups
+    values <- selected_category
+    
+    donut_chart <- plot_ly(labels = ~labels, values = ~values, type = 'pie', hole = 0.6)
+    
+    donut_chart %>% layout(title = paste(" College Prep Enrollment by Racial Group -", names(df)[input$category + 1]))
+  })
+}
+
+shinyApp(ui, server)
