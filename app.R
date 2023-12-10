@@ -15,7 +15,7 @@ ui <- fluidPage(
              )
     ),
     tabPanel("Education",
-             df <- data.frame(
+             df_donut <- data.frame(
   Racial.Groups = c("American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander", "Two or more races", "White"),
   AP.Enrollment = c(12158, 345173, 273207, 717464, 6894, 103718, 1423670),
   IB.Enrollment = c(612, 22376, 23235, 44513, 489, 7382, 68933),
@@ -24,32 +24,63 @@ ui <- fluidPage(
 )
 
 
+df_bar <- data.frame(
+  Racial_Groups = c(
+    "American Indian or Alaska Native", "Asian", "Black or African American",
+    "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander",
+    "Two or more races", "White"
+  ),
+  High_School_Grad_Percentage = c(78.10, 88.20, 88.30, 73.10, 87.60, 81.30, 93.70),
+  Bachelor_Degree_Percentage = c(16.80, 57.40, 25.40, 20.40, 19.80, 27.90, 39.00)
+)
+
+
 ui <- fluidPage(
-  titlePanel("Enrollment Data by Racial Group"),
+  titlePanel("Enrollment and Education Data by Racial Group"),
   sidebarLayout(
     sidebarPanel(
       sliderInput("category", "Select Category:",
-                  min = 1, max = ncol(df) - 1, value = 1, step = 1,)
-),
+                  min = 1, max = ncol(df_donut) - 1, value = 1, step = 1)
+    ),
     mainPanel(
-      plotlyOutput("donutChart")
+      plotlyOutput("donutChart"),
+      plotOutput("barPlot")
     )
   )
 )
 
+
 server <- function(input, output) {
+  # Render donut chart using plotly
   output$donutChart <- renderPlotly({
-    selected_category <- df[, input$category + 1]
-    labels <- df$Racial.Groups
+    selected_category <- df_donut[, input$category + 1]
+    labels <- df_donut$Racial.Groups
     values <- selected_category
     
     donut_chart <- plot_ly(labels = ~labels, values = ~values, type = 'pie', hole = 0.6)
     
-    donut_chart %>% layout(title = paste(" College Prep Enrollment by Racial Group -", names(df)[input$category + 1]))
+    donut_chart %>% layout(title = paste(" College Prep Enrollment by Racial Group -", names(df_donut)[input$category + 1]))
+  })
+  
+  
+  output$barPlot <- renderPlot({
+    ggplot(df_bar, aes(y = Racial_Groups)) +
+      geom_col(aes(x = High_School_Grad_Percentage, fill = "High School Graduation"),
+               position = "dodge", width = 0.4) +
+      geom_col(aes(x = Bachelor_Degree_Percentage, fill = "Bachelor's Degree"),
+               position = position_dodge(width = 0.5), width = 0.4) +
+      labs(title = "High School Graduation and Bachelor's Degree Percentage by Race",
+           y = "Racial Groups", x = "Percentage") +
+      scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+      scale_fill_manual(values = c("High School Graduation" = "skyblue", "Bachelor's Degree" = "hotpink"),
+                        name = "Education Level") +
+      theme_minimal()
   })
 }
 
+
 shinyApp(ui, server)
+
              fluidRow(
                column(12,
                       h2("Education"),
