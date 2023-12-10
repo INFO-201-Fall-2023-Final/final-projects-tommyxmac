@@ -1,7 +1,8 @@
 library(shiny)
 library(ggplot2)
 library(plotly)
-
+library(shinyanimate)
+library(gganimate)
 source("GroupBD_App.r") 
 
 
@@ -71,7 +72,48 @@ ui <- fluidPage(
                column(12,
                       h2("Income and Employment"),
                       p("This graph compares data on the median income and unemployment rates by race. A lower median income and a higher rate of unemployment could indicate that a racial group has fewer access to healthcare sources. Thus, making it challenging for individuals to seek medical assistance or afford preventive measures. While a higher rate of employment may indicate to a lack of health insurance and force individuals into jobs with greater exposure risks, increasing their chances of contracting the virus.") 
-                      #INSERT GRAPH HERE  
+                      data <- data.frame(
+  group = c("American Indian or Alaska Native", "Asian", "Black or African American", 
+            "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander", "White"),
+  values = c(52810, 108700, 52860, 62800, 69973, 81060),
+  frame = c(1, 2, 3, 4, 5, 6)
+)
+
+ui <- fluidPage(
+  titlePanel("Median Income By Race/Ethnicity"),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput("selected_races", "Select Race(s):", choices = data$group, selected = ""),
+      actionButton("update_button", "Update Plot")
+    ),
+    mainPanel(
+      plotOutput("animated_bar_plot")
+    )
+  )
+)
+
+
+server <- function(input, output, session) {
+  filtered_data <- reactive({
+    selected_races <- input$selected_races
+    data[data$group %in% selected_races, ]
+  })
+  
+  output$animated_bar_plot <- renderPlot({
+    ggplot(filtered_data(), aes(x = group, y = values, group = group, fill = group)) +
+      geom_col() +
+      labs(title = "Income by Race", 
+           x = "Race", y = "Income in $") + 
+      theme_bw()
+  })
+  
+  observeEvent(input$update_button, {
+    animate("animated_bar_plot", nframes = nrow(filtered_data()))
+  })
+}
+
+shinyApp(ui, server)
+
                         )
              )
     ),
