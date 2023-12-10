@@ -1,0 +1,22 @@
+data <- data.frame(
+  Racial_Groups = c(
+    "American Indian or Alaska Native", "Asian", "Black or African American",
+    "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander",
+    "Two or more races", "White"
+  ),
+  High_School_Grad_Percentage = c(78.10, 88.20, 88.30, 73.10, 87.60, 81.30, 93.70),
+  Bachelor_Degree_Percentage = c(16.80, 57.40, 25.40, 20.40, 19.80, 27.90, 39.00)
+)
+
+
+ggplot(data, aes(y = Racial_Groups)) +
+  geom_col(aes(x = High_School_Grad_Percentage, fill = "High School Graduation"),
+           position = "dodge", width = 0.4) +
+  geom_col(aes(x = Bachelor_Degree_Percentage, fill = "Bachelor's Degree"),
+           position = position_dodge(width = 0.5), width = 0.4) +
+  labs(title = "High School Graduation and Bachelor's Degree Percentage by Race",
+       y = "Racial Groups", x = "Percentage") +
+  scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0,100)) + 
+  scale_fill_manual(values = c("High School Graduation" = "skyblue", "Bachelor's Degree" = "hotpink"),
+                    name = "Education Level") +
+  theme_minimal()
