@@ -1,0 +1,42 @@
+library(readr)
+library(ggplot2)
+library(plotly)
+library(shiny)
+
+GroupBD_Project <- read_csv("GroupBD_Project.csv")
+#-------------------------------------------------------------------------------
+ui <- fluidPage(
+  titlePanel("Compare Uninsured Rates by Racial Groups"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("race1", "Select Race 1", choices = insurance_data$RacialGroup),
+      selectInput("race2", "Select Race 2", choices = insurance_data$RacialGroup)
+    ),
+    mainPanel(
+      plotlyOutput("comparisonPlot")
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$comparisonPlot <- renderPlotly({
+    selected_race1 <- input$race1
+    selected_race2 <- input$race2
+    
+    filter_ins_data <- insurance_data[
+      insurance_data$RacialGroup %in% c(selected_race1, selected_race2),
+    ]
+    
+    plot <- plot_ly(filter_ins_data, x = ~RacialGroup, y = ~filter_ins_data[, 2], type = 'bar', color = ~RacialGroup)
+    plot <- add_trace(plot, y = ~filter_ins_data[, 3], name = '2021')
+    plot <- layout(plot,
+                   title = "Healthcare Insurance: Comparison by Race",
+                   xaxis = list(title = "Racial Groups"),
+                   yaxis = list(title = "Uninsured Rates per Year (%)"),
+                   barmode = 'group')
+    
+    plot
+  })
+}
+
+shinyApp(ui = ui, server = server)
