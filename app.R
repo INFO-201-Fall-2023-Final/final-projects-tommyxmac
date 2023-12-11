@@ -3,6 +3,7 @@ library(ggplot2)
 library(plotly)
 library(shinyanimate)
 library(gganimate)
+library(tidyr)
 source("GroupBD_App.r") 
 
 
@@ -72,11 +73,10 @@ ui <- fluidPage(
                column(12,
                       h2("Income and Employment"),
                       p("This graph compares data on the median income and unemployment rates by race. A lower median income and a higher rate of unemployment could indicate that a racial group has fewer access to healthcare sources. Thus, making it challenging for individuals to seek medical assistance or afford preventive measures. While a higher rate of employment may indicate to a lack of health insurance and force individuals into jobs with greater exposure risks, increasing their chances of contracting the virus.") 
-                      library(shiny)
+ library(shiny)
 library(shinyanimate)
 library(gganimate)
 library(ggplot2)
-library(tidyr)
 
 
 data <- data.frame(
@@ -86,41 +86,25 @@ data <- data.frame(
   frame = c(1, 2, 3, 4, 5, 6)
 )
 
-
-unemployment_data <- data.frame(
-  Racial.Groups = c("American Indian or Alaska Native", "Asian", "Black or African American", 
-                    "Hispanic or Latino of any race", "Native Hawaiian or Other Pacific Islander", 
-                    "Two or more races", "White"),
-  x2020_unemployment_percentage = c(11.7, 8.7, 11.4, 10.4, 8.9, 11.6, 7.3),
-  x2021_unemployment_percentage = c(8.2, 5, 8.6, 5, 6.9, 8.2, 4.7)
-)
-
-
-unemployment_data_long <- gather(unemployment_data, key = "Year", value = "UnemploymentRate", -Racial.Groups)
-
-
 ui <- fluidPage(
-  titlePanel("Combined Visualization"),
+  titlePanel("Median Income By Race/Ethnicity"),
   sidebarLayout(
     sidebarPanel(
       checkboxGroupInput("selected_races", "Select Race(s):", choices = data$group, selected = ""),
       actionButton("update_button", "Update Plot")
     ),
     mainPanel(
-      plotOutput("animated_bar_plot"),
-      plotOutput("unemployment_bar_plot")
+      plotOutput("animated_bar_plot")
     )
   )
 )
 
 
 server <- function(input, output, session) {
-  
   filtered_data <- reactive({
     selected_races <- input$selected_races
     data[data$group %in% selected_races, ]
   })
-  
   
   output$animated_bar_plot <- renderPlot({
     ggplot(filtered_data(), aes(x = group, y = values, group = group, fill = group)) +
@@ -133,22 +117,10 @@ server <- function(input, output, session) {
   observeEvent(input$update_button, {
     animate("animated_bar_plot", nframes = nrow(filtered_data()))
   })
-  
-
-  output$unemployment_bar_plot <- renderPlot({
-    ggplot(unemployment_data_long, aes(x = Racial.Groups, y = UnemploymentRate, fill = Year)) +
-      geom_bar(stat = "identity", position = "dodge", width = 0.7) +
-      coord_polar(theta = "y") +
-      labs(title = "Unemployment Rate by Race (2020 and 2021)",
-           y = "Unemployment Rate (%)",
-           x = NULL,
-           fill = "Year") +
-      theme_minimal()
-  })
 }
 
-
 shinyApp(ui, server)
+
 
                         )
              )
