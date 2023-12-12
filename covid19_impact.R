@@ -1,4 +1,5 @@
 library(dplyr)
+library(tidyverse)
 coll_prep_rates_df <- read.csv("College prep rates.csv")
 Unemployment_df <- read.csv("Unemployement Rates.csv")
 Higher_edu_df <- read.csv("Rates of higher education.csv")
